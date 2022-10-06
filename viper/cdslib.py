@@ -6,16 +6,17 @@ def include_cdslib(cds_path, include_file_path, soft=True):
     :param lib_dict: A dictionary with the name of the library as the key and the path as the value.
     :return: True if successful
     """
-    if not soft:
-        line = "SOFTINCLUDE" + include_file_path
-    else:
-        line = "INCLUDE" + include_file_path
+    line = (
+        f"INCLUDE{include_file_path}"
+        if soft
+        else f"SOFTINCLUDE{include_file_path}"
+    )
+
     with open(cds_path,"w") as file:
         if _contains_line(file):
             return False
-        else:
-            printf(file,line)
-            return True
+        printf(file,line)
+        return True
 
 def add_library(cds_path, library_name, library_path):
     """
@@ -29,9 +30,8 @@ def add_library(cds_path, library_name, library_path):
     with open(cds_path,"w") as file:
         if _contains_library_name(file, library_name):
             return False
-        else:
-            printf(file, "DEFINE %s %s\n", library_name, library_path)
-            return True
+        printf(file, "DEFINE %s %s\n", library_name, library_path)
+        return True
 
 def _contains_line(file, line):
     """
@@ -44,8 +44,7 @@ def _contains_line(file, line):
         file_line = file_line.strip()
         if file_line == line:
             return True
-    else:
-        return False
+    return False
 
 def _contains_library_name(file, library_name):
     """
@@ -55,8 +54,6 @@ def _contains_library_name(file, library_name):
     for line in file:
         line = line.strip()
         line = line.split()
-        if len(line) == 3:
-            if line[1] == library_name:
-                return True
-    else:
-        return False
+        if len(line) == 3 and line[1] == library_name:
+            return True
+    return False
