@@ -47,11 +47,9 @@ def start_project(project, dev=False, name=None, prefix=False, shell=None, init=
                 for script_bottom in script_top.split(":"):
                     if os.path.isfile(script_bottom):
                         scripts_exist.append(script_bottom)
-        if len(scripts_exist) > 0:
-            scripts_out = ":".join(scripts_exist)
-        else:
-            scripts_out = None
+        scripts_out = ":".join(scripts_exist) if scripts_exist else None
         return scripts_out
+
     viper_config_path = os.environ["VIPER_CONFIG_PATH"]
     config=toml.load(viper_config_path)
     projects_root = config["environment"]["projects_path"]
